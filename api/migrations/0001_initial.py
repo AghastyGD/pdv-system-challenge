@@ -4,6 +4,25 @@ from django.db import migrations, models
 import django.db.models.deletion
 
 
+def populate_categoria(apps, schema_editor):
+    Categoria = apps.get_model('api', 'Categoria')
+
+    categorias = [
+        ('Informática'),
+        ('Celulares'),
+        ('Beleza e Perfumaria'),
+        ('Mercado'),
+        ('Livros e Papelaria'),
+        ('Brinquedos'),
+        ('Moda'),
+        ('Bebê'),
+        ('Games')
+    ]
+
+    for descricao in categorias:
+        Categoria.objects.create(descricao=descricao)
+
+
 class Migration(migrations.Migration):
 
     initial = True
@@ -19,6 +38,7 @@ class Migration(migrations.Migration):
                 ('descricao', models.CharField(max_length=100)),
             ],
         ),
+
         migrations.CreateModel(
             name='Clientes',
             fields=[
@@ -53,4 +73,6 @@ class Migration(migrations.Migration):
                 ('categoria_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.categoria')),
             ],
         ),
+
+        migrations.RunPython(populate_categoria)
     ]

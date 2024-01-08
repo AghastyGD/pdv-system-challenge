@@ -1,18 +1,62 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.hashers import check_password, make_password
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
+class UsuarioManager(BaseUserManager):
+    def create_user(self, email, nome, senha=None, **extra_fields):
+        if not email:
+            raise ValueError('O campo de email é obrigatório')
+        email = self.normalize_email(email)
+        user = self.model(email=email, nome=nome, **extra_fields)
+        user.senha = make_password(senha)
+        user.save(using=self._db)
+
+        return user
+    
+    def create_superuser(self, email, nome, senha=None, **extra_fields):
+        user = self.create_user(email, nome, senha, **extra_fields)
+        user.is_staff = True
+        user.is_superuser = True
+        user.save(using=self._db)
+
+        return user
 
 class Usuario(models.Model):
     nome = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
-    senha = models.CharField(max_length=25)
+    senha = models.CharField(max_length=128, default=None)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+
+    objects = UsuarioManager()
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['nome']
+
+    def __str__(self):
+        return self.nome
+
+    def save(self, *args, **kwargs):
+        self.senha = make_password(self.senha)
+        super().save(*args, **kwargs)
+
+    def check_password(self, raw_password):
+        return check_password(raw_password, self.senha)
+    
+    @property
+    def is_anonymous(self):
+        return False
+    
+    @property
+    def is_authenticated(self):
+        return True
 
 
 class Categoria(models.Model):
     descricao = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.titulo
+        return self.descricao
 
 class Produtos(models.Model):
     descricao = models.CharField(max_length=250)
