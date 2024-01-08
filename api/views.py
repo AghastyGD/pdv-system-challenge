@@ -3,7 +3,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication, BaseAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import status
 from .models import Categoria, Usuario
 from .serializers import UsuarioSerializer, CategoriaSerializer
@@ -21,15 +21,30 @@ class CategoriaApiView(APIView):
 
 
 class UsuarioApiView(APIView):
-    '''
-    Cadastrar um novo usuario
-    '''
-    def post (self, request, *args, **kwargs):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        serializer = UsuarioSerializer(request.user)
+        return Response(serializer.data)
+
+    def put(self, request, *args, **kwargs):
+        serializer = UsuarioSerializer(request.user, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+
+
+class RegistrarUsuario(APIView):
+    def post(self, request, *args, **kwargs):
+        self.permission_classes = [AllowAny]
+        if request.user.is_authenticated:
+            return Response({'detail': 'Você já esta logado.'}, status=status.HTTP_400_BAD_REQUEST)
+        
         serializer = UsuarioSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.to_representation(instance=serializer.instance), status=status.HTTP_201_CREATED)
-
 
 class UsuarioLogin(APIView):
     def post (self, request, *args, **kwargs):
