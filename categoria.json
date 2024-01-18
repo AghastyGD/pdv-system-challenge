@@ -1,0 +1,20 @@
+[ 
+  { "model": "api.categoria", "pk": 1, "fields": { "descricao": "Informática" } 
+}, 
+  { "model": "api.categoria", "pk": 2, "fields": { "descricao": "Celulares" } 
+},
+  { "model": "api.categoria", "pk": 3, "fields": { "descricao": "Beleza e Perfumaria" } 
+},
+  { "model": "api.categoria", "pk": 4, "fields": { "descricao": "Mercado" } 
+},
+  { "model": "api.categoria", "pk": 5, "fields": { "descricao": "Livros e Papelaria" } 
+},
+  { "model": "api.categoria", "pk": 6, "fields": { "descricao": "Brinquedos" } 
+},
+  { "model": "api.categoria", "pk": 7, "fields": { "descricao": "Moda" } 
+},
+  { "model": "api.categoria", "pk": 8, "fields": { "descricao": "Bebê" } 
+},
+  { "model": "api.categoria", "pk": 9, "fields": { "descricao": "Games" } 
+}
+]

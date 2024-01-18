@@ -9,8 +9,7 @@ from .models import Categoria
 from .serializers import UsuarioSerializer, CategoriaSerializer, ProdutosSerializer, ClientesSerializer
 
 
-class Categoria(APIView):
-
+class CategoriaView(APIView):
     # Listar todas as categorias
     def get(self, request, *args, **kwargs):
         categorias = Categoria.objects.all()
@@ -19,7 +18,7 @@ class Categoria(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class Usuario(APIView):
+class UsuarioView(APIView):
     permission_classes = [IsAuthenticated]
 
     # Mostar detalhes do perfil do usuario logado
@@ -34,14 +33,14 @@ class Usuario(APIView):
         serializer.save()
         return Response(serializer.data)
 
-class RegistrarUsuario(APIView):
+class RegistrarUsuarioView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = UsuarioSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.to_representation(instance=serializer.instance), status=status.HTTP_201_CREATED)
 
-class UsuarioLogin(APIView):
+class UsuarioLoginView(APIView):
     def post (self, request, *args, **kwargs):
         email = request.data.get('email')
         senha = request.data.get('senha')
@@ -57,7 +56,7 @@ class UsuarioLogin(APIView):
             return Response({'detail': 'As credenciais estão inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
-class Produto(APIView):
+class ProdutoView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):

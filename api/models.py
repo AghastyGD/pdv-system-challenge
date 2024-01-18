@@ -12,14 +12,6 @@ class UsuarioManager(BaseUserManager):
         user.save(using=self._db)
 
         return user
-    
-    def create_superuser(self, email, nome, senha=None, **extra_fields):
-        user = self.create_user(email, nome, senha, **extra_fields)
-        user.is_staff = True
-        user.is_superuser = True
-        user.save(using=self._db)
-
-        return user
 
 class Usuario(models.Model):
     nome = models.CharField(max_length=100)
