@@ -1,22 +1,16 @@
 from django.contrib.auth import authenticate, login
+from .functions import get_cliente, get_produto
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication, BaseAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
-from .models import Categoria, Produtos
+from .models import Categoria, Produtos, Clientes
 from .serializers import UsuarioSerializer, CategoriaSerializer, ProdutosSerializer, ClientesSerializer
 
 
-# FUNÇÃO PARA PEGAR PEGAR ID DE PRODUTO
-def get_object(id):
-    try:
-        return Produtos.objects.get(id=id)
-        
-    except Produtos.DoesNotExist:
-        return None
-  
+
 # ========================================= ENDPOINTS =================================================    
 
 # CATEGORIA
@@ -80,7 +74,7 @@ class ProdutoView(APIView):
         return Response(serializer.to_representation(instance=serializer.instance), status=status.HTTP_201_CREATED)
     
     def put(self, request, id, *args, **kwargs):  # Atualizer um produto
-       produto = get_object(id)
+       produto = get_produto(id)
        serializer = ProdutosSerializer(produto, data = request.data, partial = True)
        serializer.is_valid(raise_exception = True)
        serializer.save()
@@ -99,7 +93,7 @@ class ProdutoView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     def delete(self, request, id, *args, **kwargs):   # Remover um produto fornecendo o ID
-        produto = get_object(id)
+        produto = get_produto(id)
         produto.delete()
         
         return Response(status=status.HTTP_204_NO_CONTENT) 
@@ -107,7 +101,7 @@ class ProdutoView(APIView):
 # DETALHE DE UM PRODUTO    
 class ProdutoDetailView(APIView):
     def get(self, request, id, *args, **kwargs):  # Mostrar detalhes de um produto
-        produtos_instance = get_object(id)
+        produtos_instance = get_produto(id)
         if not produtos_instance:
             return Response(
                 {"res": "Produto nao encontrado"},
@@ -127,5 +121,36 @@ class ClienteView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         
-        return Response(serializer.to_representation(instance=serializer.instance), status=status.HTTP_201_CREATED)
+        return Response(serializer.to_representation(instance=serializer.instance), 
+                        status=status.HTTP_201_CREATED)
+        
+    def put(self, request, id, *args, **kwargs):  # Atualizer um cliente
+        cliente = get_cliente(id)
+        serializer = ClientesSerializer(cliente, data = request.data, partial = True)
+        serializer.is_valid(raise_exception = True)
+        serializer.save()
+        
+        return Response(serializer.data)
+    
+    def get(self, request, *args, **kwargs): # Listar clientes
+        clientes = Clientes.objects.all()
+        serializer = ClientesSerializer(clientes, many=True)
 
+        return Response(serializer.data, status=status.HTTP_200_OK)
+      
+# DETALHE DE CLIENTE
+class ClienteDetailView(APIView):
+    def get(self, request, id, *args, **kwargs):  # Mostrar detalhes de um cliente
+        cliente_instance = get_cliente(id)
+        if not cliente_instance:
+            return Response(
+                {"res": "Cliente nao encontrado"},
+                status = status.HTTP_400_BAD_REQUEST
+            )
+
+        serializer = ClientesSerializer(cliente_instance)
+        
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+    

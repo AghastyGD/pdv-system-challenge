@@ -56,7 +56,6 @@ class Produtos(models.Model):
     valor = models.FloatField()
     categoria_id = models.ForeignKey(Categoria, on_delete=models.CASCADE)
 
-
 class Clientes(models.Model):
     nome = models.CharField(max_length=150)
     email = models.EmailField(unique=True)
