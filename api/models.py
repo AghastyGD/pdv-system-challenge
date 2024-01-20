@@ -58,12 +58,12 @@ class Produtos(models.Model):
 
 
 class Clientes(models.Model):
-    nome = models.CharField(max_length=100)
+    nome = models.CharField(max_length=150)
     email = models.EmailField(unique=True)
-    cpf = models.IntegerField(unique=True)
+    cpf = models.CharField(unique=True, max_length=100)
     cep = models.CharField(max_length=100)
     rua = models.CharField(max_length=100)
-    numero = models.IntegerField()
+    numero = models.CharField(max_length=55)
     bairro = models.CharField(max_length=100)
     cidade = models.CharField(max_length=100)
     estado = models.CharField(max_length=100)

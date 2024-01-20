@@ -1,1 +1,4 @@
 .history
+pdv_system/__pycache__
+api/__pycache__
+api/migrations/__pycache__
