@@ -66,6 +66,17 @@ class Clientes(models.Model):
     bairro = models.CharField(max_length=100)
     cidade = models.CharField(max_length=100)
     estado = models.CharField(max_length=100)
+    
+class Pedidos(models.Model):
+    cliente_id = models.ForeignKey(Clientes, on_delete=models.CASCADE)
+    observacao = models.TextField(blank=True, null=True)
+    valor_total = models.FloatField()
+    
+class PedidosProdutos(models.Model):
+  #  pedido_id = models.ForeignKey(Pedidos, on_delete=models.CASCADE)
+    produto_id = models.ForeignKey(Produtos, on_delete=models.CASCADE)
+    quantidade_produto = models.IntegerField()
+    valor_produto = models.FloatField()
 
 
 

@@ -7,7 +7,7 @@ from rest_framework.authentication import SessionAuthentication, BaseAuthenticat
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from .models import Categoria, Produtos, Clientes
-from .serializers import UsuarioSerializer, CategoriaSerializer, ProdutosSerializer, ClientesSerializer
+from .serializers import UsuarioSerializer, CategoriaSerializer, ProdutosSerializer, ClientesSerializer, PedidosSerializer, PedidosProdutosSerializer
 
 
 
@@ -151,6 +151,18 @@ class ClienteDetailView(APIView):
         serializer = ClientesSerializer(cliente_instance)
         
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+# PEDIDOS
+class PedidoView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    # Cadastrar um pedido
+    def post(self, request, *args, **kwargs):
+        serializer = PedidosSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
     
 
     
