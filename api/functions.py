@@ -15,4 +15,3 @@ def get_cliente(id):  # Pegar id do cliente
         
         except Clientes.DoesNotExist:
             return None
-    

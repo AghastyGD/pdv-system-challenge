@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login
+from django.shortcuts import get_object_or_404
 from .functions import get_cliente, get_produto
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
@@ -6,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication, BaseAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
-from .models import Categoria, Produtos, Clientes
+from .models import Categoria, Produtos, Clientes, Pedidos
 from .serializers import UsuarioSerializer, CategoriaSerializer, ProdutosSerializer, ClientesSerializer, PedidosSerializer, PedidosProdutosSerializer
 
 
@@ -79,7 +80,7 @@ class ProdutoView(APIView):
        serializer.is_valid(raise_exception = True)
        serializer.save()
       
-       return Response(serializer.data)
+       return Response(serializer.data, status=status.HTTP_200_OK)
    
     def get(self, request, *args, **kwargs):    # Listar produtos e filtrar por categoria
         categoria_id = request.query_params.get('categoria_id')
@@ -164,5 +165,19 @@ class PedidoView(APIView):
         
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
+    # Listar pedidos 
+    def get(self, request, *args, **kwargs):
+      pedidos = Pedidos.objects.all()
+      serialzer = PedidosSerializer(pedidos, many=True)
+      
+      return Response(serializer.data, status=status.HTTP_200_OK)
 
+# LISTAR PEDIDOS POR CLIENTES
+class ClientePedidosView(APIView):
+  def get(self, request, cliente_id, *args, **kwargs):
+    cliente = get_object_or_404(Clientes, id=cliente_id)
+    cliente_pedidos = Pedidos.objects.filter(cliente_id=cliente_id)
     
+    serializer = PedidosSerializer(cliente_pedidos, many=True)
+      
+    return Response(serializer.data, status=status.HTTP_200_OK)
