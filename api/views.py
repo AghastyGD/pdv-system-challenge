@@ -168,7 +168,7 @@ class PedidoView(APIView):
     # Listar pedidos 
     def get(self, request, *args, **kwargs):
       pedidos = Pedidos.objects.all()
-      serialzer = PedidosSerializer(pedidos, many=True)
+      serializer = PedidosSerializer(pedidos, many=True)
       
       return Response(serializer.data, status=status.HTTP_200_OK)
 
