@@ -1,15 +1,13 @@
 from .models import Clientes, Produtos
 
-
-def get_produto(id):  # Pegar id do produto
+def get_produto(id): 
     try:
         return Produtos.objects.get(id=id)
         
     except Produtos.DoesNotExist:
         return None
 
-
-def get_cliente(id):  # Pegar id do cliente
+def get_cliente(id):
         try:
            return Clientes.objects.get(id=id)
         
